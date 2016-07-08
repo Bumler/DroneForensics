@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@mipmap/clouds">
+
+    <!--TODO Add a cool background and custom buttons Remove weird blue title-->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/Title"
+        android:layout_marginTop="25dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Forensic Drone"
+            android:id="@+id/TitleText"
+            android:textSize="45dp"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:textColorHint="#000000" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/launch"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageButton
+            android:src="@drawable/launchclick"
+            android:background="#0000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Launch"
+            android:id="@+id/Launch"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <!-- switch to options, but for now use as a portal to practice -->
+    <LinearLayout
+        android:id="@+id/lowerResults"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp">
+
+        <ImageButton
+            android:src="@drawable/optionclick"
+            android:background="#0000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Practice"
+            android:id="@+id/Options"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+</LinearLayout>

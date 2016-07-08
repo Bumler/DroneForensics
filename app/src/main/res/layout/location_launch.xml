@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@mipmap/clouds">>
+
+    <LinearLayout
+        android:id="@+id/buttonPanel"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp">
+
+        <ImageButton
+            android:src="@drawable/addlocclick"
+            android:background="#0000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="300dp"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:text="Add Current Location"
+            android:id="@+id/button"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="376dp"
+            android:scaleType="fitXY"
+            android:id="@+id/map"
+            android:src = "@mipmap/map"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+</LinearLayout>
