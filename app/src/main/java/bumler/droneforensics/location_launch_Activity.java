@@ -28,7 +28,7 @@ public class location_launch_Activity extends Activity{
             @Override
             public void onClick(View v) {
                 boundaries++;
-                if (boundaries <= 5) {
+                if (boundaries >= 5) {
                     Intent i = new Intent(location_launch_Activity.this, altitude_launch_Activity.class);
                     startActivity(i);
                 }
