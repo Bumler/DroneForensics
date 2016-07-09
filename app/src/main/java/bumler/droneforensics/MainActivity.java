@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,7 @@ public class MainActivity extends Activity {
     private GoogleApiClient client;
 
     private ImageButton goToLocation;
+    private ImageButton goToOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,14 @@ public class MainActivity extends Activity {
     
     //// TODO: 7/7/2016 use this to get to a practice layout 
     public void options(){
-        
+        goToOptions = (ImageButton) findViewById(R.id.Options);
+        goToOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, practice_practice_Activity.class);
+                startActivity(i);
+            }
+        });
     }
     
     @Override
