@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp">
+        android:layout_marginTop="70dp">
 
         <ImageButton
             android:src="@drawable/addlocclick"
@@ -26,16 +26,18 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:weightSum="1">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="376dp"
+            android:layout_width="333dp"
+            android:layout_height="326dp"
             android:scaleType="fitXY"
             android:id="@+id/map"
-            android:src = "@mipmap/map"
+            android:src = "@drawable/kingsmanpark"
             android:adjustViewBounds="true"
             android:layout_gravity="center_vertical" />
     </LinearLayout>

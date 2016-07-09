@@ -15,11 +15,18 @@ public class altitude_launch_Activity extends Activity {
     private int altitude = 0;
     private Button toEx;
     private RadioButton pop;
+    //private boolean custom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.altitude_launch);
+
+        boolean custom = getIntent().getBooleanExtra("custom",false);
+        if (custom){
+            pop = (RadioButton) findViewById(R.id.customBTN);
+            pop.setText(""+getIntent().getIntExtra("feet", 0)+"ft");
+        }
 
         toExecute();
         customPop();
