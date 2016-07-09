@@ -34,8 +34,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".pop_altitude_Activity">
-            android:theme="@style/AppTheme.TransparentPop"
+        <activity android:name=".pop_altitude_Activity" android:theme="@style/AppTheme.TransparentPop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
