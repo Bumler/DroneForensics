@@ -1,33 +1,158 @@
 package bumler.droneforensics;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+        import android.app.Application;
+        import android.content.Intent;
+        import android.os.Handler;
+        import android.os.Looper;
+        import android.util.Log;
+        import android.widget.Toast;
+
+        //import com.dji.sdk.sample.R;
+
+        import dji.sdk.Products.DJIAircraft;
+        import dji.sdk.Products.DJIHandHeld;
+        import dji.sdk.SDKManager.DJISDKManager;
+        import dji.sdk.base.DJIBaseComponent;
+        import dji.sdk.base.DJIBaseProduct;
+        import dji.sdk.base.DJIError;
+        import dji.sdk.base.DJISDKError;
 
 /**
- * Created by d10 on 7/8/2016.
+ * Created by dji on 15/12/28.
  */
+public class practice_practice_Activity extends Application {
 
-public class practice_practice_Activity extends Activity{
-    private Button back;
+    private static final String TAG = practice_practice_Activity.class.getName();
+
+    public static final String FLAG_CONNECTION_CHANGE = "com_example_dji_sdkdemo3_connection_change";
+
+    private static DJIBaseProduct mProduct;
+
+    private Handler mHandler;
+
+    /**
+     * Gets instance of the specific product connected after the
+     * API KEY is successfully validated. Please make sure the
+     * API_KEY has been added in the Manifest
+     */
+    public static synchronized DJIBaseProduct getProductInstance() {
+        if (null == mProduct) {
+            mProduct = DJISDKManager.getInstance().getDJIProduct();
+        }
+        return mProduct;
+    }
+
+    public static boolean isAircraftConnected() {
+        return getProductInstance() != null && getProductInstance() instanceof DJIAircraft;
+    }
+
+    public static boolean isHandHeldConnected() {
+        return getProductInstance() != null && getProductInstance() instanceof DJIHandHeld;
+    }
+
+    public static synchronized DJIAircraft getAircraftInstance() {
+        if (!isAircraftConnected()) return null;
+        return (DJIAircraft) getProductInstance();
+    }
+
+    public static synchronized DJIHandHeld getHandHeldInstance() {
+        if (!isHandHeldConnected()) return null;
+        return (DJIHandHeld) getProductInstance();
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.practice_practice);
+    public void onCreate() {
+        super.onCreate();
 
-        back();
+        mHandler = new Handler(Looper.getMainLooper());
+
+        /**
+         * handles SDK Registration using the API_KEY
+         */
+        DJISDKManager.getInstance().initSDKManager(this, mDJISDKManagerCallback);
     }
+    private DJISDKManager.DJISDKManagerCallback mDJISDKManagerCallback = new DJISDKManager.DJISDKManagerCallback() {
 
-    public void back(){
-        back = (Button) findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(practice_practice_Activity.this, MainActivity.class);
-                startActivity(i);
+        @Override
+        public void onGetRegisteredResult(DJIError error) {
+            if(error == DJISDKError.REGISTRATION_SUCCESS) {
+                DJISDKManager.getInstance().startConnectionToProduct();
+                Toast.makeText(getApplicationContext(),
+                        R.string.sdk_success,
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                R.string.sdk_registration_message,
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+
             }
-        });
-    }
+            Log.v(TAG, error.getDescription());
+        }
+
+        @Override
+        public void onProductChanged(DJIBaseProduct oldProduct, DJIBaseProduct newProduct) {
+
+            Log.v(TAG, String.format("onProductChanged oldProduct:%s, newProduct:%s", oldProduct, newProduct));
+            mProduct = newProduct;
+            if(mProduct != null) {
+                mProduct.setDJIBaseProductListener(mDJIBaseProductListener);
+            }
+
+            notifyStatusChange();
+        }
+
+        private DJIBaseProduct.DJIBaseProductListener mDJIBaseProductListener = new DJIBaseProduct.DJIBaseProductListener() {
+
+            @Override
+            public void onComponentChange(DJIBaseProduct.DJIComponentKey key, DJIBaseComponent oldComponent, DJIBaseComponent newComponent) {
+
+                if(newComponent != null) {
+                    newComponent.setDJIComponentListener(mDJIComponentListener);
+                }
+                Log.v(TAG, String.format("onComponentChange key:%s, oldComponent:%s, newComponent:%s", key, oldComponent, newComponent));
+
+                notifyStatusChange();
+            }
+
+            @Override
+            public void onProductConnectivityChanged(boolean isConnected) {
+
+                Log.v(TAG, "onProductConnectivityChanged: " + isConnected);
+
+                notifyStatusChange();
+            }
+
+        };
+
+        private DJIBaseComponent.DJIComponentListener mDJIComponentListener = new DJIBaseComponent.DJIComponentListener() {
+
+            @Override
+            public void onComponentConnectivityChanged(boolean isConnected) {
+                notifyStatusChange();
+            }
+
+        };
+
+        private void notifyStatusChange() {
+            mHandler.removeCallbacks(updateRunnable);
+            mHandler.postDelayed(updateRunnable, 500);
+        }
+
+        private Runnable updateRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Intent intent = new Intent(FLAG_CONNECTION_CHANGE);
+                sendBroadcast(intent);
+            }
+        };
+    };
+
 }

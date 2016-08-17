@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">DroneForensics</string>
+
+    <string name="sdk_registration_message">SDK Registration Failed. Please check the bundle ID and your network connectivity</string>
+
+    <string name="sdk_success">SDK Successful</string>
 </resources>
