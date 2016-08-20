@@ -93,7 +93,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".practice_practice_Activity">
+        <activity android:name=".camera_Activity">
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -101,7 +102,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ShowConnectionActivity">
+        <activity android:name=".connection_Activity"
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
