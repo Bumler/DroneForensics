@@ -28,6 +28,7 @@
     <!-- DJI SDK -->
 
     <application
+        android:name=".FPVDemoApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -35,7 +36,7 @@
         android:theme="@style/AppTheme">
 
         <uses-library android:name="com.android.future.usb.accessory" />
-    <meta-data
+         <meta-data
         android:name="com.dji.sdk.API_KEY"
         android:value="bf3cf365b561f2028b237577" />
 
@@ -63,61 +64,30 @@
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
 
         <activity android:name=".location_launch_Activity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".altitude_launch_Activity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
-        <activity android:name=".pop_altitude_Activity" android:theme="@style/AppTheme.TransparentPop" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name=".pop_altitude_Activity"
+            android:theme="@style/AppTheme.TransparentPop" >
         </activity>
 
         <activity android:name=".execute_launch_Activity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".camera_Activity">
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".connection_Activity"
             android:screenOrientation="portrait">
+        </activity>
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name=".camera_Activity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.dji.sdk.API_KEY"
-            android:value="bf3cf365b561f2028b237577" />
     </application>
 
 </manifest>
