@@ -64,4 +64,12 @@
             android:id="@+id/Options"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WayPoints"
+        android:id="@+id/btn_wayPoints"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="60dp" />
 </LinearLayout>

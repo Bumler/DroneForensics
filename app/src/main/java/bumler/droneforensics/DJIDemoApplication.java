@@ -1,5 +1,8 @@
 package bumler.droneforensics;
 
+/**
+ * Created by d10 on 8/22/2016.
+ */
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -9,30 +12,22 @@ import android.support.multidex.MultiDex;
 import android.util.Log;
 import android.widget.Toast;
 
-import dji.sdk.Camera.DJICamera;
-import dji.sdk.Products.DJIAircraft;
-import dji.sdk.Products.DJIHandHeld;
 import dji.sdk.SDKManager.DJISDKManager;
 import dji.sdk.base.DJIBaseComponent;
-import dji.sdk.base.DJIBaseComponent.DJIComponentListener;
 import dji.sdk.base.DJIBaseProduct;
-import dji.sdk.base.DJIBaseProduct.DJIBaseProductListener;
-import dji.sdk.base.DJIBaseProduct.DJIComponentKey;
 import dji.sdk.base.DJIError;
 import dji.sdk.base.DJISDKError;
 
-public class FPVDemoApplication extends Application{
+public class DJIDemoApplication extends Application {
 
-    public static final String FLAG_CONNECTION_CHANGE = "fpv_tutorial_connection_change";
+    private static final String TAG = DJIDemoApplication.class.getName();
+
+    public static final String FLAG_CONNECTION_CHANGE = "dji_sdk_connection_change";
 
     private static DJIBaseProduct mProduct;
 
     private Handler mHandler;
 
-    /**
-     * This function is used to get the instance of DJIBaseProduct.
-     * If no product is connected, it returns null.
-     */
     public static synchronized DJIBaseProduct getProductInstance() {
         if (null == mProduct) {
             mProduct = DJISDKManager.getInstance().getDJIProduct();
@@ -40,67 +35,54 @@ public class FPVDemoApplication extends Application{
         return mProduct;
     }
 
-    public static boolean isAircraftConnected() {
-        return getProductInstance() != null && getProductInstance() instanceof DJIAircraft;
-    }
-
-    public static boolean isHandHeldConnected() {
-        return getProductInstance() != null && getProductInstance() instanceof DJIHandHeld;
-    }
-
-    public static synchronized DJICamera getCameraInstance() {
-
-        if (getProductInstance() == null) return null;
-        return getProductInstance().getCamera();
-
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
+
         mHandler = new Handler(Looper.getMainLooper());
-        //This is used to start SDK services and initiate SDK.
         DJISDKManager.getInstance().initSDKManager(this, mDJISDKManagerCallback);
+
     }
 
-    /**
-     * When starting SDK services, an instance of interface DJISDKManager.DJISDKManagerCallback will be used to listen to
-     * the SDK Registration result and the product changing.
-     */
+    protected void attachBaseContext(Context base){
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
     private DJISDKManager.DJISDKManagerCallback mDJISDKManagerCallback = new DJISDKManager.DJISDKManagerCallback() {
 
-        //Listens to the SDK registration result
         @Override
         public void onGetRegisteredResult(DJIError error) {
 
+            Log.d(TAG, error == null ? "success" : error.getDescription());
             if(error == DJISDKError.REGISTRATION_SUCCESS) {
-
+                DJISDKManager.getInstance().startConnectionToProduct();
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
+
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "Register Success", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
                     }
                 });
-
-                DJISDKManager.getInstance().startConnectionToProduct();
+                Log.d(TAG, "Register success");
 
             } else {
-
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
 
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "Register sdk fails, check network is available", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "register sdk fails, check network is available", Toast.LENGTH_LONG).show();
                     }
                 });
 
+                Log.d(TAG, "Register failed");
+
             }
-            Log.e("TAG", error.toString());
+            Log.e(TAG, error == null ? "success" : error.getDescription());
         }
 
-        //Listens to the connected product changing, including two parts, component changing or product connection changing.
         @Override
         public void onProductChanged(DJIBaseProduct oldProduct, DJIBaseProduct newProduct) {
 
@@ -113,11 +95,10 @@ public class FPVDemoApplication extends Application{
         }
     };
 
-    private DJIBaseProductListener mDJIBaseProductListener = new DJIBaseProductListener() {
+    private DJIBaseProduct.DJIBaseProductListener mDJIBaseProductListener = new DJIBaseProduct.DJIBaseProductListener() {
 
         @Override
-        public void onComponentChange(DJIComponentKey key, DJIBaseComponent oldComponent, DJIBaseComponent newComponent) {
-
+        public void onComponentChange(DJIBaseProduct.DJIComponentKey key, DJIBaseComponent oldComponent, DJIBaseComponent newComponent) {
             if(newComponent != null) {
                 newComponent.setDJIComponentListener(mDJIComponentListener);
             }
@@ -126,13 +107,12 @@ public class FPVDemoApplication extends Application{
 
         @Override
         public void onProductConnectivityChanged(boolean isConnected) {
-
             notifyStatusChange();
         }
 
     };
 
-    private DJIComponentListener mDJIComponentListener = new DJIComponentListener() {
+    private DJIBaseComponent.DJIComponentListener mDJIComponentListener = new DJIBaseComponent.DJIComponentListener() {
 
         @Override
         public void onComponentConnectivityChanged(boolean isConnected) {
@@ -154,10 +134,5 @@ public class FPVDemoApplication extends Application{
             sendBroadcast(intent);
         }
     };
-
-    protected void attachBaseContext(Context base){
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
 
 }

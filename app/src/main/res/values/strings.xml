@@ -11,4 +11,6 @@
     <string name="disconnected">Disconnected</string>
     <string name="product_information">Product Information</string>
     <string name="connection_loose">Status: No Product Connected</string>
+
+    <string name="google_app_id">Google_APP_ID</string>
 </resources>

@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.google.android.gms.appindexing.Action;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity {
 
     private ImageButton goToLocation;
     private ImageButton goToOptions;
+    private Button goToWayPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class MainActivity extends Activity {
 
         launch();
         options();
+        wayPoint();
     }
 
     private void launch(){
@@ -73,6 +76,17 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this, connection_Activity.class);
+                startActivity(i);
+            }
+        });
+    }
+
+    public void wayPoint(){
+        goToWayPoint = (Button) findViewById(R.id.btn_wayPoints);
+        goToWayPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, waypoint_Activity.class);
                 startActivity(i);
             }
         });
