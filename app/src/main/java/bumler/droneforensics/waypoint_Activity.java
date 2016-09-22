@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -56,7 +57,8 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     private GoogleMap gMap;
 
     private Button locate, add, clear;
-    private Button config, prepare, start, stop;
+    private Button config, prepare;
+    private ImageButton start, stop, camera;
 
     private boolean isAdd = false;
 
@@ -116,8 +118,9 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         clear = (Button) findViewById(R.id.clear);
         config = (Button) findViewById(R.id.config);
         prepare = (Button) findViewById(R.id.prepare);
-        start = (Button) findViewById(R.id.start);
-        stop = (Button) findViewById(R.id.stop);
+        start = (ImageButton) findViewById(R.id.start);
+        stop = (ImageButton) findViewById(R.id.stop);
+        camera = (ImageButton) findViewById(R.id.camera);
 
         locate.setOnClickListener(this);
         add.setOnClickListener(this);
