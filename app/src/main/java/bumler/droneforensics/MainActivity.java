@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         goToLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, location_launch_Activity.class);
+                Intent i = new Intent(MainActivity.this, connection_Activity.class);
                 startActivity(i);
             }
         });
