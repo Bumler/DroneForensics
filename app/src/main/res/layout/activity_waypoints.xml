@@ -62,7 +62,8 @@
             android:id="@+id/start"
             android:src="@drawable/goclick"
             android:scaleType="fitXY"
-            android:layout_weight=".3" />
+            android:layout_weight=".3"
+            android:background="#FFFFFF"/>
 
         <ImageButton
             android:layout_width="135dp"
@@ -70,7 +71,8 @@
             android:id="@+id/stop"
             android:src="@drawable/stopclick"
             android:scaleType="fitXY"
-            android:layout_weight=".3" />
+            android:layout_weight=".3"
+            android:background="#FFFFFF"/>
 
         <ImageButton
             android:layout_width="135dp"
@@ -78,7 +80,8 @@
             android:id="@+id/camera"
             android:src="@drawable/camclick"
             android:scaleType="fitXY"
-            android:layout_weight=".3" />
+            android:layout_weight=".3"
+            android:background="#FFFFFF"/>
     </LinearLayout>
 
     <fragment

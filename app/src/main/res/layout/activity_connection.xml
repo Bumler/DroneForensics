@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="DJIFPVDemo"
+        android:text="Connection Test"
         android:id="@+id/textView"
         android:layout_marginTop="58dp"
         android:textStyle="bold"
@@ -65,5 +65,16 @@
         android:textColor="@color/colorBlack"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:maxLines="3"
+        android:text="Ensure that you are connected to your drone. \n If you are using an internet connection \n try turning your wifi on and off"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_connection_status"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="39dp"
+        android:id="@+id/ReminderText"
+        android:gravity="center_horizontal" />
 
 </RelativeLayout>

@@ -23,6 +23,7 @@ public class connection_Activity extends Activity implements View.OnClickListene
 
     private TextView mTextConnectionStatus;
     private TextView mTextProduct;
+    private TextView mReminder;
     private Button mBtnOpen;
 
     @Override
@@ -89,6 +90,7 @@ public class connection_Activity extends Activity implements View.OnClickListene
 
         mTextConnectionStatus = (TextView) findViewById(R.id.text_connection_status);
         mTextProduct = (TextView) findViewById(R.id.text_product_info);
+        mReminder = (TextView) findViewById(R.id.ReminderText);
         mBtnOpen = (Button) findViewById(R.id.btn_open);
         mBtnOpen.setOnClickListener(this);
         mBtnOpen.setEnabled(false);
@@ -115,6 +117,7 @@ public class connection_Activity extends Activity implements View.OnClickListene
 
             if (null != mProduct.getModel()) {
                 mTextProduct.setText("" + mProduct.getModel().getDisplayName());
+                mReminder.setText("");
             } else {
                 mTextProduct.setText(R.string.product_information);
             }

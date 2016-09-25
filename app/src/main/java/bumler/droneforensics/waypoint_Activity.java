@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -123,12 +124,14 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         camera = (ImageButton) findViewById(R.id.camera);
 
         locate.setOnClickListener(this);
+        locate.setBackgroundColor(Color.YELLOW);
         add.setOnClickListener(this);
         clear.setOnClickListener(this);
         config.setOnClickListener(this);
         prepare.setOnClickListener(this);
         start.setOnClickListener(this);
         stop.setOnClickListener(this);
+        camera.setOnClickListener(this);
 
     }
 
@@ -331,6 +334,10 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
             case R.id.stop:{
                 stopWaypointMission();
                 break;
+            }
+            case R.id.camera:{
+                Intent i = new Intent(waypoint_Activity.this, camera_Activity.class);
+                startActivity(i);
             }
             default:
                 break;
