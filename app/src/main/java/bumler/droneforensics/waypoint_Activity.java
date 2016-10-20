@@ -41,6 +41,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.lang.Math;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -259,16 +261,16 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
 
     @Override
     public void onMapClick(LatLng point) {
-        if (isAdd == true) {
-            markWaypoint(point);
-            DJIWaypoint mWaypoint = new DJIWaypoint(point.latitude, point.longitude, altitude);
-            //Add Waypoints to Waypoint arraylist;
-            if (mWaypointMission != null) {
-                mWaypointMission.addWaypoint(mWaypoint);
-            }
-        } else {
-            setResultToToast("Cannot Add Waypoint");
-        }
+//        if (isAdd == true) {
+//            markWaypoint(point);
+//            DJIWaypoint mWaypoint = new DJIWaypoint(point.latitude, point.longitude, altitude);
+//            //Add Waypoints to Waypoint arraylist;
+//            if (mWaypointMission != null) {
+//                mWaypointMission.addWaypoint(mWaypoint);
+//            }
+//        } else {
+//            setResultToToast("Cannot Add Waypoint");
+//        }
     }
 
     public static boolean checkGpsCoordination(double latitude, double longitude) {
@@ -279,6 +281,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     private void updateDroneLocation() {
 
         LatLng pos = new LatLng(droneLocationLat, droneLocationLng);
+
         //Create MarkerOptions object
         final MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(pos);
@@ -298,11 +301,23 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         });
     }
 
-    private void markWaypoint(LatLng point) {
+    private void markWaypoint(LatLng point, String pointColor) {
         //Create MarkerOptions object
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(point);
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        if (pointColor.equals("blue")) {
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        }
+        else if (pointColor.equals("green")){
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        }
+        else if (pointColor.equals("yellow")){
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+        }
+        else{
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+        }
+
         Marker marker = gMap.addMarker(markerOptions);
         mMarkers.put(mMarkers.size(), marker);
     }
@@ -391,11 +406,12 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         LatLng point = new LatLng(latitude, longitude);
 
             waypoints.add(point);
-            markWaypoint(point);
+            markWaypoint(point, "blue");
             createDJIWaypoint(point);
 
             if(waypoints.size() == 2){
                 mirrorWaypoints();
+                buildFlightPath();
             }
     }
 
@@ -414,15 +430,57 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         LatLng pointB = waypoints.get(1);
         LatLng mirror = new LatLng(pointA.latitude, pointB.longitude);
         waypoints.add(mirror);
-        markWaypoint(mirror);
+        markWaypoint(mirror, "green");
         createDJIWaypoint(mirror);
 
         mirror = new LatLng(pointB.latitude, pointA.longitude);
-        markWaypoint(mirror);
+        markWaypoint(mirror, "green");
         waypoints.add(mirror);
         createDJIWaypoint(mirror);
 
         add.setEnabled(false);
+    }
+
+    double width;
+    double height;
+    private void buildFlightPath(){
+        //this finds the distance of the points non diagonally
+        double width = calculateDistance(waypoints.get(0), waypoints.get(2));
+        double height = calculateDistance(waypoints.get(1), waypoints.get(3));
+        //we want to standardize our grid so we swap things around so that width is always points 0,2
+        if (height > width){
+            double temp = height;
+            height = width;
+            width = temp;
+            swapPoints(0,2);
+            swapPoints(1,3);
+            displayWaypoints();
+        }
+        setResultToToast("Height "+height+ "Width "+width);
+    }
+
+    private double calculateDistance(LatLng a, LatLng b){
+                /*
+                http://www.movable-type.co.uk/scripts/latlong.html
+            Haversine
+            formula:	a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)
+            c = 2 ⋅ atan2( √a, √(1−a) )
+            d = R ⋅ c
+                 */
+
+        double R = 6371e3;
+        double omega1 = Math.toRadians(a.latitude);
+        double omega2 = Math.toRadians(b.latitude);
+        double changeInOmega = Math.toRadians(b.latitude - a.latitude);
+        double changeInLamda = Math.toRadians(b.longitude - a.longitude);
+
+        double A = Math.sin((changeInOmega/2)) * Math.sin((changeInOmega/2)) +
+                Math.cos(omega1) * Math.cos(omega2) * Math.sin((changeInLamda/2)) *Math.sin((changeInLamda/2));
+
+        double c = 2 * Math.atan2(Math.sqrt(A), Math.sqrt(1-A));
+        double d = R * c;
+
+        return d;
     }
 
     private void cameraUpdate() {
@@ -436,7 +494,19 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         else{
             setResultToToast("Drone not found");
         }
+    }
 
+    private void swapPoints(int a, int b){
+        LatLng temp = waypoints.get(b);
+        waypoints.set(b, waypoints.get(a));
+        waypoints.set(a, temp);
+    }
+
+    private void displayWaypoints(){
+        gMap.clear();
+        for (int i = 0; i < waypoints.size(); i++){
+            markWaypoint(waypoints.get(i), "yellow");
+        }
     }
 
     private void enableDisableAdd() {
