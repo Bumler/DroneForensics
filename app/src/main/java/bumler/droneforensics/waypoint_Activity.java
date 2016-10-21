@@ -428,12 +428,12 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     private void mirrorWaypoints(){
         LatLng pointA = waypoints.get(0);
         LatLng pointB = waypoints.get(1);
-        LatLng mirror = new LatLng(pointA.latitude, pointB.longitude);
+        LatLng mirror = new LatLng(pointB.latitude, pointA.longitude);
         waypoints.add(mirror);
         markWaypoint(mirror, "green");
         createDJIWaypoint(mirror);
 
-        mirror = new LatLng(pointB.latitude, pointA.longitude);
+        mirror = new LatLng(pointA.latitude, pointB.longitude);
         markWaypoint(mirror, "green");
         waypoints.add(mirror);
         createDJIWaypoint(mirror);
@@ -443,7 +443,13 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
 
     double width;
     double height;
+    double cameraHeight;
+    double cameraWidth;
+    int heightCells;
+    int widthCells;
     private void buildFlightPath(){
+        //TODO order points SouthWest, NorthWest, NorthEast, SouthEast
+
         //this finds the distance of the points non diagonally
         double width = calculateDistance(waypoints.get(0), waypoints.get(2));
         double height = calculateDistance(waypoints.get(1), waypoints.get(3));
@@ -456,7 +462,20 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
             swapPoints(1,3);
             displayWaypoints();
         }
-        setResultToToast("Height "+height+ "Width "+width);
+        setResultToToast("Height "+height+ " Width "+width);
+
+        //find the camera dimensions based on altitude. Here we are assuming an altitude of 30m
+        //TODO dynamically calculate altitude
+        //TODO set altitude to 30
+        cameraHeight = 22.5;
+        cameraWidth  = 30.0;
+
+        //once we have created a space width by height we will break up that space into cells
+        //these cells will be calculated by the dimensions of our camera
+        heightCells = findFlightCells(height, cameraHeight);
+        widthCells  = findFlightCells(width, cameraWidth);
+
+        setResultToToast("Height Cells "+heightCells+" Width Cells "+widthCells);
     }
 
     private double calculateDistance(LatLng a, LatLng b){
@@ -507,6 +526,28 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         for (int i = 0; i < waypoints.size(); i++){
             markWaypoint(waypoints.get(i), "yellow");
         }
+    }
+
+    //breaks the total measurement into the number of cells the camera would need to capture it all
+    private int findFlightCells(double m, double dimens){
+        int numCells;
+
+        //if our measurement is smaller than our base dimensions there can only be one cell
+        //this is not optimal use. Although it allows it the user is given a warning
+        //this removes any worries about dividing by zero
+        if (m < dimens){
+            setResultToToast("This is an extremely small area and may not provide optimal results");
+            return 1;
+        }
+
+        else if (dimens%m != 0){
+            numCells = ((int)dimens)/((int)m) + 1;
+        }
+        else{
+            numCells = ((int)dimens)/((int)m);
+        }
+
+        return numCells;
     }
 
     private void enableDisableAdd() {
