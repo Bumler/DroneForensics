@@ -510,7 +510,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         //ssoutheast should have the lowest lat and lowest long
         LatLng southeast = waypoints.get(0);
         for (int i = 1; i < waypoints.size(); i++){
-            if (waypoints.get(i).latitude <= southeast.latitude && waypoints.get(i).longitude <= southeast.longitude){
+            if (waypoints.get(i).latitude <= southeast.latitude && waypoints.get(i).longitude >= southeast.longitude){
                 southeast = waypoints.get(i);
             }
         }
