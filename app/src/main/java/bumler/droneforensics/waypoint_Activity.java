@@ -314,6 +314,9 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         else if (pointColor.equals("yellow")){
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
         }
+        else if (pointColor.equals("red")){
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+        }
         else{
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
         }
@@ -430,11 +433,11 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         LatLng pointB = waypoints.get(1);
         LatLng mirror = new LatLng(pointB.latitude, pointA.longitude);
         waypoints.add(mirror);
-        markWaypoint(mirror, "green");
+        //markWaypoint(mirror, "green");
         createDJIWaypoint(mirror);
 
         mirror = new LatLng(pointA.latitude, pointB.longitude);
-        markWaypoint(mirror, "green");
+        //markWaypoint(mirror, "green");
         waypoints.add(mirror);
         createDJIWaypoint(mirror);
 
@@ -449,19 +452,20 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     int widthCells;
     private void buildFlightPath(){
         //TODO order points SouthWest, NorthWest, NorthEast, SouthEast
+        orientWaypoints();
 
         //this finds the distance of the points non diagonally
         double width = calculateDistance(waypoints.get(0), waypoints.get(2));
         double height = calculateDistance(waypoints.get(1), waypoints.get(3));
-        //we want to standardize our grid so we swap things around so that width is always points 0,2
-        if (height > width){
-            double temp = height;
-            height = width;
-            width = temp;
-            swapPoints(0,2);
-            swapPoints(1,3);
-            displayWaypoints();
-        }
+//        //we want to standardize our grid so we swap things around so that width is always points 0,2
+//        if (height > width){
+//            double temp = height;
+//            height = width;
+//            width = temp;
+//            swapPoints(0,2);
+//            swapPoints(1,3);
+//            displayWaypoints();
+//        }
         setResultToToast("Height "+height+ " Width "+width);
 
         //find the camera dimensions based on altitude. Here we are assuming an altitude of 30m
@@ -476,6 +480,53 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         widthCells  = findFlightCells(width, cameraWidth);
 
         setResultToToast("Height Cells "+heightCells+" Width Cells "+widthCells);
+    }
+
+    private void orientWaypoints(){
+        //the southwest point will have the smallest lat and longitude
+        LatLng southwest = waypoints.get(0);
+        for (int i = 1; i < waypoints.size(); i++){
+            if (waypoints.get(i).latitude <= southwest.latitude && waypoints.get(i).longitude <= southwest.longitude){
+                southwest = waypoints.get(i);
+            }
+        }
+
+        //northwest will have the lowest long and highest lat
+        LatLng northwest = waypoints.get(0);
+        for (int i = 1; i < waypoints.size(); i++){
+            if (waypoints.get(i).latitude >= northwest.latitude && waypoints.get(i).longitude <= northwest.longitude){
+                northwest = waypoints.get(i);
+            }
+        }
+
+        //northeast should have the highest lat and long
+        LatLng northeast = waypoints.get(0);
+        for (int i = 1; i < waypoints.size(); i++){
+            if (waypoints.get(i).latitude >= northeast.latitude && waypoints.get(i).longitude >= northeast.longitude){
+                northeast = waypoints.get(i);
+            }
+        }
+
+        //ssoutheast should have the lowest lat and lowest long
+        LatLng southeast = waypoints.get(0);
+        for (int i = 1; i < waypoints.size(); i++){
+            if (waypoints.get(i).latitude <= southeast.latitude && waypoints.get(i).longitude <= southeast.longitude){
+                southeast = waypoints.get(i);
+            }
+        }
+
+        waypoints = new ArrayList<>();
+        waypoints.add(southwest);
+        markWaypoint(southwest, "green");
+
+        waypoints.add(northwest);
+        markWaypoint(northwest, "blue");
+
+        waypoints.add(northeast);
+        markWaypoint(northeast, "red");
+
+        waypoints.add(southeast);
+        markWaypoint(southeast, "yellow");
     }
 
     private double calculateDistance(LatLng a, LatLng b){
