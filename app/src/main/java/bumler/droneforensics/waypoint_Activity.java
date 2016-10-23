@@ -259,20 +259,6 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
 
     }
 
-    @Override
-    public void onMapClick(LatLng point) {
-//        if (isAdd == true) {
-//            markWaypoint(point);
-//            DJIWaypoint mWaypoint = new DJIWaypoint(point.latitude, point.longitude, altitude);
-//            //Add Waypoints to Waypoint arraylist;
-//            if (mWaypointMission != null) {
-//                mWaypointMission.addWaypoint(mWaypoint);
-//            }
-//        } else {
-//            setResultToToast("Cannot Add Waypoint");
-//        }
-    }
-
     public static boolean checkGpsCoordination(double latitude, double longitude) {
         return (latitude > -90 && latitude < 90 && longitude > -180 && longitude < 180) && (latitude != 0f && longitude != 0f);
     }
@@ -393,6 +379,24 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     }
 
     ArrayList<LatLng> waypoints = new ArrayList<>();
+
+    @Override
+    public void onMapClick(LatLng point) {
+        if(add.isEnabled()){
+            addToWaypoints(point);
+        }
+//        if (isAdd == true) {
+//            markWaypoint(point);
+//            DJIWaypoint mWaypoint = new DJIWaypoint(point.latitude, point.longitude, altitude);
+//            //Add Waypoints to Waypoint arraylist;
+//            if (mWaypointMission != null) {
+//                mWaypointMission.addWaypoint(mWaypoint);
+//            }
+//        } else {
+//            setResultToToast("Cannot Add Waypoint");
+//        }
+    }
+
     private void addAtPosition(){
 //        LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 //        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -408,14 +412,18 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
 
         LatLng point = new LatLng(latitude, longitude);
 
-            waypoints.add(point);
-            markWaypoint(point, "blue");
-            createDJIWaypoint(point);
+        addToWaypoints(point);
+    }
 
-            if(waypoints.size() == 2){
-                mirrorWaypoints();
-                buildFlightPath();
-            }
+    private void addToWaypoints(LatLng point){
+        waypoints.add(point);
+        markWaypoint(point, "blue");
+        createDJIWaypoint(point);
+
+        if(waypoints.size() == 2){
+            mirrorWaypoints();
+            buildFlightPath();
+        }
     }
 
     private void createDJIWaypoint(LatLng point){
@@ -424,7 +432,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         if (mWaypointMission != null) {
             mWaypointMission.addWaypoint(mWaypoint);
         } else {
-            setResultToToast("Cannot Add Waypoint");
+            //setResultToToast("Cannot Add Waypoint");
         }
     }
 
