@@ -444,8 +444,8 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         add.setEnabled(false);
     }
 
-    double width;
     double height;
+    double width;
     double cameraHeight;
     double cameraWidth;
     int heightCells;
@@ -455,8 +455,8 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         orientWaypoints();
 
         //this finds the distance of the points non diagonally
-        double width = calculateDistance(waypoints.get(0), waypoints.get(3));
-        double height = calculateDistance(waypoints.get(0), waypoints.get(1));
+        height = calculateDistance(waypoints.get(0), waypoints.get(1));
+        width = calculateDistance(waypoints.get(0), waypoints.get(3));
 //        //we want to standardize our grid so we swap things around so that width is always points 0,2
 //        if (height > width){
 //            double temp = height;
