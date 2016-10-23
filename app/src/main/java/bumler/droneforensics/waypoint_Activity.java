@@ -461,6 +461,8 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     double move_vertical;
     double move_horizontal;
     final double r_earth = 6378000;
+    LatLng initialPoint;
+    LatLng currentPoint;
     private void buildFlightPath(){
         //TODO order points SouthWest, NorthWest, NorthEast, SouthEast
         orientWaypoints();
@@ -491,11 +493,57 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         //generates the initial lat and long point based on the vertical and horizontal movement applied to the southwestern point
         double initialPointLat = waypoints.get(0).latitude  + ((move_vertical/2) / r_earth) * (180 / Math.PI);
         double initialPointLong = waypoints.get(0).longitude  + ((-1 * move_horizontal/2) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).longitude * Math.PI/180);
-        LatLng initialPoint = new LatLng(initialPointLat, initialPointLong);
+        initialPoint = new LatLng(initialPointLat, initialPointLong);
         waypoints.add(initialPoint);
         markWaypoint(initialPoint, "default");
 
-        //generateWaypoints(initialPoint);
+        generateWaypoints();
+    }
+
+    private void generateWaypoints(){
+        boolean up = true;
+        currentPoint = initialPoint;
+        for (int i = 0; i < widthCells-1; i++){
+            for (int j = 0; j < heightCells-1; j++){
+                if (up){
+                    makePoint("up");
+                }
+                else{
+                    makePoint("down");
+                }
+            }
+
+            if (i != widthCells - 2){
+                makePoint("right");
+            }
+            if (up){
+                up = false;
+            }
+            else{
+                up = true;
+            }
+        }
+    }
+
+    private void makePoint(String direction){
+        LatLng point;
+        if (direction.equals("up")){
+            //generates the initial lat and long point based on the vertical and horizontal movement applied to the southwestern point
+            double PointLat = currentPoint.latitude  + ((move_vertical) / r_earth) * (180 / Math.PI);
+            point = new LatLng(PointLat, currentPoint.longitude);
+        }
+        else if(direction.equals("down")){
+            double PointLat = currentPoint.latitude  + ((-1 * move_vertical) / r_earth) * (180 / Math.PI);
+            point = new LatLng(PointLat, currentPoint.longitude);
+        }
+        else{
+            double PointLong = currentPoint.longitude  + ((-1 * move_horizontal) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).longitude * Math.PI/180);
+            point = new LatLng(currentPoint.latitude, PointLong);
+        }
+
+        waypoints.add(point);
+        markWaypoint(point, "default");
+        currentPoint = point;
     }
 
     private void orientWaypoints(){
