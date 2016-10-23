@@ -458,6 +458,8 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     double cameraWidth;
     int heightCells;
     int widthCells;
+    double move_vertical;
+    double move_horizontal;
     private void buildFlightPath(){
         //TODO order points SouthWest, NorthWest, NorthEast, SouthEast
         orientWaypoints();
@@ -480,6 +482,10 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         widthCells  = findFlightCells(width, cameraWidth);
 
         setResultToToast("Height Cells "+heightCells+" Width Cells "+widthCells);
+
+        //divides the vertical and horizontal distances by the number of cells
+        move_vertical = setMove(height, heightCells);
+        move_horizontal = setMove(width, widthCells);
     }
 
     private void orientWaypoints(){
@@ -599,6 +605,10 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         }
 
         return numCells;
+    }
+
+    private double setMove(double m, int cells){
+        return m/cells;
     }
 
     private void enableDisableAdd() {
