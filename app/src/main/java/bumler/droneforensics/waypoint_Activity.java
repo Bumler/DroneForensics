@@ -465,15 +465,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         //this finds the distance of the points non diagonally
         height = calculateDistance(waypoints.get(0), waypoints.get(1));
         width = calculateDistance(waypoints.get(0), waypoints.get(3));
-//        //we want to standardize our grid so we swap things around so that width is always points 0,2
-//        if (height > width){
-//            double temp = height;
-//            height = width;
-//            width = temp;
-//            swapPoints(0,2);
-//            swapPoints(1,3);
-//            displayWaypoints();
-//        }
+
         setResultToToast("Height "+height+ " Width "+width);
 
         //find the camera dimensions based on altitude. Here we are assuming an altitude of 30m
@@ -599,11 +591,11 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
             return 1;
         }
 
-        else if (dimens%m != 0){
-            numCells = ((int)dimens)/((int)m) + 1;
+        else if (m%dimens != 0){
+            numCells = (int)(m/dimens) + 1;
         }
         else{
-            numCells = ((int)dimens)/((int)m);
+            numCells = (int)(m/dimens);
         }
 
         return numCells;
