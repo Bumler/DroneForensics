@@ -460,6 +460,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     int widthCells;
     double move_vertical;
     double move_horizontal;
+    final double r_earth = 6378000;
     private void buildFlightPath(){
         //TODO order points SouthWest, NorthWest, NorthEast, SouthEast
         orientWaypoints();
@@ -486,6 +487,15 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
         //divides the vertical and horizontal distances by the number of cells
         move_vertical = setMove(height, heightCells);
         move_horizontal = setMove(width, widthCells);
+
+        //generates the initial lat and long point based on the vertical and horizontal movement applied to the southwestern point
+        double initialPointLat = waypoints.get(0).latitude  + ((move_vertical/2) / r_earth) * (180 / Math.PI);
+        double initialPointLong = waypoints.get(0).longitude  + ((-1 * move_horizontal/2) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).longitude * Math.PI/180);
+        LatLng initialPoint = new LatLng(initialPointLat, initialPointLong);
+        waypoints.add(initialPoint);
+        markWaypoint(initialPoint, "default");
+
+        //generateWaypoints(initialPoint);
     }
 
     private void orientWaypoints(){
