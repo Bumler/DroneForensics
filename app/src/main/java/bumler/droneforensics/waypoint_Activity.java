@@ -492,7 +492,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
 
         //generates the initial lat and long point based on the vertical and horizontal movement applied to the southwestern point
         double initialPointLat = waypoints.get(0).latitude  + ((move_vertical/2) / r_earth) * (180 / Math.PI);
-        double initialPointLong = waypoints.get(0).longitude  + ((-1 * move_horizontal/2) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).longitude * Math.PI/180);
+        double initialPointLong = waypoints.get(0).longitude  + (((move_horizontal/2)) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).latitude * Math.PI/180);
         initialPoint = new LatLng(initialPointLat, initialPointLong);
         waypoints.add(initialPoint);
         markWaypoint(initialPoint, "default");
@@ -503,7 +503,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     private void generateWaypoints(){
         boolean up = true;
         currentPoint = initialPoint;
-        for (int i = 0; i < widthCells-1; i++){
+        for (int i = 0; i < widthCells; i++){
             for (int j = 0; j < heightCells-1; j++){
                 if (up){
                     makePoint("up");
@@ -513,7 +513,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
                 }
             }
 
-            if (i != widthCells - 2){
+            if (i < widthCells-1){
                 makePoint("right");
             }
             if (up){
@@ -537,7 +537,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
             point = new LatLng(PointLat, currentPoint.longitude);
         }
         else{
-            double PointLong = currentPoint.longitude  + ((-1 * move_horizontal) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).longitude * Math.PI/180);
+            double PointLong = currentPoint.longitude  + ((move_horizontal) / r_earth) * (180 / Math.PI) / Math.cos(currentPoint.latitude * Math.PI/180);
             point = new LatLng(currentPoint.latitude, PointLong);
         }
 
@@ -659,6 +659,7 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
             numCells = (int)(m/dimens) + 1;
         }
         else{
+            setResultToToast("Test");
             numCells = (int)(m/dimens);
         }
 
