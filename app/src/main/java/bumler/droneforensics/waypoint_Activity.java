@@ -463,6 +463,8 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
     final double r_earth = 6378000;
     LatLng initialPoint;
     LatLng currentPoint;
+
+    final int max_cells = 250;
     private void buildFlightPath(){
         //TODO order points SouthWest, NorthWest, NorthEast, SouthEast
         orientWaypoints();
@@ -486,18 +488,24 @@ public class waypoint_Activity extends FragmentActivity implements View.OnClickL
 
         setResultToToast("Height Cells "+heightCells+" Width Cells "+widthCells);
 
-        //divides the vertical and horizontal distances by the number of cells
-        move_vertical = setMove(height, heightCells);
-        move_horizontal = setMove(width, widthCells);
+        if ((heightCells * widthCells) < max_cells) {
+            //divides the vertical and horizontal distances by the number of cells
+            move_vertical = setMove(height, heightCells);
+            move_horizontal = setMove(width, widthCells);
 
-        //generates the initial lat and long point based on the vertical and horizontal movement applied to the southwestern point
-        double initialPointLat = waypoints.get(0).latitude  + ((move_vertical/2) / r_earth) * (180 / Math.PI);
-        double initialPointLong = waypoints.get(0).longitude  + (((move_horizontal/2)) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).latitude * Math.PI/180);
-        initialPoint = new LatLng(initialPointLat, initialPointLong);
-        waypoints.add(initialPoint);
-        markWaypoint(initialPoint, "default");
+            //generates the initial lat and long point based on the vertical and horizontal movement applied to the southwestern point
+            double initialPointLat = waypoints.get(0).latitude + ((move_vertical / 2) / r_earth) * (180 / Math.PI);
+            double initialPointLong = waypoints.get(0).longitude + (((move_horizontal / 2)) / r_earth) * (180 / Math.PI) / Math.cos(waypoints.get(0).latitude * Math.PI / 180);
+            initialPoint = new LatLng(initialPointLat, initialPointLong);
+            waypoints.add(initialPoint);
+            markWaypoint(initialPoint, "default");
 
-        generateWaypoints();
+            generateWaypoints();
+        }
+
+        else{
+            setResultToToast("The area you're requesting is too large try a higher altitude or a smaller altitude");
+        }
     }
 
     private void generateWaypoints(){
